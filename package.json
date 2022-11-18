@@ -2,9 +2,13 @@
   "name": "nest-base",
   "version": "0.0.1",
   "description": "",
-  "author": "Juan David Matos",
+  "author": "Juan David Matos <juand0014@hotmail.com> (https://github.com/Juand0014)",
   "private": true,
-  "license": "MIT License",
+  "license": "MIT",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
