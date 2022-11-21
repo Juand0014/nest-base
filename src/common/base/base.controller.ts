@@ -1,9 +1,11 @@
 import {
-  Controller,
+  Body,
+  Controller, Delete, Get, Param, Patch, Post,
 } from '@nestjs/common';
+import { get } from 'http';
 import { Schema } from 'mongoose';
 import { BaseEntity, IBaseController, IBaseService } from '.';
-import { Constructor } from './types/constructor.types';
+import { Constructor } from '../types/constructor.types';
 
 export function BaseControllerFactory<
   T extends BaseEntity,
@@ -25,28 +27,36 @@ export function BaseControllerFactory<
       >,
     ) {}
 
+    @Get()
     findAll(): Promise<T[]> {
       const entities = this.service.findAll();
       return entities;
     }
 
-    get(_id: Schema.Types.ObjectId): Promise<T> {
-      const entity = this.service.get(_id);
+    @Get(':id')
+    get(@Param('id') id: Schema.Types.ObjectId): Promise<T> {
+      const entity = this.service.get(id);
       return entity;
     }
 
-    update(_id: Schema.Types.ObjectId, updateEntityDto: TUpdateEntityDto): Promise<T> {
-      const updatedEntity = this.service.update(_id, updateEntityDto);
+    @Patch(':id')
+    update(
+      @Param('id') id: Schema.Types.ObjectId, 
+      @Body() updateEntityDto: TUpdateEntityDto
+    ): Promise<T> {
+      const updatedEntity = this.service.update(id, updateEntityDto);
       return updatedEntity;
     }
 
-    create(entity: TCreateEntityDto): Promise<T> {
+    @Post()
+    create(@Body() entity: TCreateEntityDto): Promise<T> {
       const newEntity = this.service.create(entity);
       return newEntity;
     }
 
-    delete(_id: Schema.Types.ObjectId) {
-      this.service.delete(_id);
+    @Delete(':id')
+    delete(@Param('id') id: Schema.Types.ObjectId) {
+      this.service.delete(id);
       return;
     }
     
