@@ -1,10 +1,12 @@
 import {
   Body,
-  Controller, Delete, Get, Param, Patch, Post,
+  Controller, Delete, Get, Param, Patch, Post, UsePipes,
 } from '@nestjs/common';
 import { get } from 'http';
 import { Schema } from 'mongoose';
 import { BaseEntity, IBaseController, IBaseService } from '.';
+import { AbstractValidationPipe, ParseObjectIdPipe } from '../pipes';
+import { validationPipeCustom } from '../pipes/implementsValidationPipe';
 import { Constructor } from '../types/constructor.types';
 
 export function BaseControllerFactory<
@@ -34,14 +36,15 @@ export function BaseControllerFactory<
     }
 
     @Get(':id')
-    get(@Param('id') id: Schema.Types.ObjectId): Promise<T> {
+    get(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId): Promise<T> {
       const entity = this.service.get(id);
       return entity;
     }
 
     @Patch(':id')
+    @UsePipes(validationPipeCustom(updateDto))
     update(
-      @Param('id') id: Schema.Types.ObjectId, 
+      @Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId, 
       @Body() updateEntityDto: TUpdateEntityDto
     ): Promise<T> {
       const updatedEntity = this.service.update(id, updateEntityDto);
@@ -49,13 +52,14 @@ export function BaseControllerFactory<
     }
 
     @Post()
+    @UsePipes(validationPipeCustom(bodyDto))
     create(@Body() entity: TCreateEntityDto): Promise<T> {
       const newEntity = this.service.create(entity);
       return newEntity;
     }
 
     @Delete(':id')
-    delete(@Param('id') id: Schema.Types.ObjectId) {
+    delete(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId) {
       this.service.delete(id);
       return;
     }
