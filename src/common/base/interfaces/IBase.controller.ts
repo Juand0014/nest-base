@@ -1,7 +1,7 @@
 import { BaseEntity } from '../entities/base.entity';
 import { IBaseService } from './IBase.service';
 
-export interface IBaseInterface<
+export interface IBaseController<
 	T extends BaseEntity,
 	TCreateEntityDto,
 	TUpdateEntityDto
