@@ -1,1 +1,5 @@
-export class CreateBaseDto {}
+export class CreateBaseDto {
+	createAt: Date;
+
+	updateAt: Date;
+}
