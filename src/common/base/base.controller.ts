@@ -26,23 +26,28 @@ export function BaseControllerFactory<
     ) {}
 
     findAll(): Promise<T[]> {
-      throw new Error('Method not implemented.');
+      const entities = this.service.findAll();
+      return entities;
     }
 
     get(_id: Schema.Types.ObjectId): Promise<T> {
-      throw new Error('Method not implemented.');
+      const entity = this.service.get(_id);
+      return entity;
     }
 
     update(_id: Schema.Types.ObjectId, updateEntityDto: TUpdateEntityDto): Promise<T> {
-      throw new Error('Method not implemented.');
+      const updatedEntity = this.service.update(_id, updateEntityDto);
+      return updatedEntity;
     }
 
     create(entity: TCreateEntityDto): Promise<T> {
-      throw new Error('Method not implemented.');
+      const newEntity = this.service.create(entity);
+      return newEntity;
     }
 
     delete(_id: Schema.Types.ObjectId) {
-      throw new Error('Method not implemented.');
+      this.service.delete(_id);
+      return;
     }
     
   }
