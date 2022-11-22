@@ -9,6 +9,7 @@ import {
   environment,
   JoiValidationSchema,
 } from './config';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {
     }),
     MongooseModule.forRoot(database[environment]),
     CommonModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

@@ -1,11 +1,10 @@
 import {
   Body,
-  Controller, Delete, Get, Param, Patch, Post, UsePipes,
+  Controller, Delete, Get, Param, Patch, Post, UseFilters, UsePipes,
 } from '@nestjs/common';
-import { get } from 'http';
 import { Schema } from 'mongoose';
 import { BaseEntity, IBaseController, IBaseService } from '.';
-import { AbstractValidationPipe, ParseObjectIdPipe } from '../pipes';
+import { ParseObjectIdPipe } from '../pipes';
 import { validationPipeCustom } from '../pipes/implementsValidationPipe';
 import { Constructor } from '../types/constructor.types';
 
@@ -36,6 +35,7 @@ export function BaseControllerFactory<
     }
 
     @Get(':id')
+
     get(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId): Promise<T> {
       const entity = this.service.get(id);
       return entity;
@@ -43,7 +43,7 @@ export function BaseControllerFactory<
 
     @Patch(':id')
     @UsePipes(validationPipeCustom(updateDto))
-    update(
+    async update(
       @Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId, 
       @Body() updateEntityDto: TUpdateEntityDto
     ): Promise<T> {
@@ -59,8 +59,8 @@ export function BaseControllerFactory<
     }
 
     @Delete(':id')
-    delete(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId) {
-      this.service.delete(id);
+    async delete(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId) {
+      await this.service.delete(id);
       return;
     }
     
