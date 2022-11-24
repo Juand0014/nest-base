@@ -17,5 +17,5 @@ export interface IBaseInterface<
 
   create(entity: TCreateEntityDto): Promise<T>;
 
-  delete(_id: MSchema.Types.ObjectId);
+  delete(_id: MSchema.Types.ObjectId): Promise<void>;
 }

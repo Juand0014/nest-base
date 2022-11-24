@@ -36,14 +36,20 @@ export class BaseService<
     _id: Schema.Types.ObjectId,
     updateEntityDto: TUpdateEntityDto,
   ): Promise<T> {
-    const updatedEntity = await this.basemodule
-      .findByIdAndUpdate(_id, updateEntityDto, {
-        new: true,
-      })
-      .exec();
+    try {
+      const updatedEntity = await this.basemodule
+        .findByIdAndUpdate(_id, updateEntityDto, {
+          new: true,
+        })
+        .exec();
 
-    if (!!updatedEntity) return updatedEntity;
-    throw new NotFoundException(`Entity with id ${_id} not found`);
+      if (!Boolean(updatedEntity))
+        throw new NotFoundException(`Entity with id ${_id} not found`);
+      return updatedEntity;
+      
+    } catch (err) {
+      this.handleExceptions(err);
+    }
   }
   async create(entity: TCreateEntityDto): Promise<T> {
     try {

@@ -1,4 +1,3 @@
-import { Schema as MSchema } from 'mongoose';
 import { BaseEntity } from '../entities/base.entity';
 import { IBaseInterface } from './IBase.interfaces';
 
