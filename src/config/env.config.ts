@@ -4,7 +4,7 @@ export const envConfig = () => ({
 	},
 	environment: process.env.NODE_ENV || 'development',
 	cors: {
-		allowedHosts: process.env.CORS_ALLOWED_HOSTS,
+		origin: process.env.CORS_ALLOWED_HOSTS.split(','),
 		credential: true
 	},
 	dburi: process.env.DB_URI_DEV
