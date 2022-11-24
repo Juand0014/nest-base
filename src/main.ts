@@ -6,15 +6,16 @@ import { configSwagger, cors } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);  
+  const logger = new Logger('Bootstrap');
   const port = process.env.PORT || 3000;
 
   app.setGlobalPrefix('/api')
-
   app.enableCors(cors);
+
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
-  Logger.log(`App is running on: ${port}`, "Bootstrap");
+  await app.listen(port);
+  logger.log(`App is running on: ${port}`);
 }
 bootstrap();

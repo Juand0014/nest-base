@@ -29,6 +29,3 @@ This is a base NestJS project with some basic configurations.
 | /users | POST | Creates a new user |
 | /users/:id | PUT | Updates a user by id |
 | /users/:id | DELETE | Deletes a user by id |
-
-
-   

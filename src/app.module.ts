@@ -10,6 +10,7 @@ import {
   JoiValidationSchema,
 } from './config';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserModule } from './modules/user/user.module';
     MongooseModule.forRoot(database[environment]),
     CommonModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
