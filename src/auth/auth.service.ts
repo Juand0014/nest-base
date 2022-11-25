@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { UserAuth } from './entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectModel(UserAuth.name)
+    private readonly userModel: Model<UserAuth>,
+  ) {}
+  async create(createAuthDto: CreateUserDto) {
+    return await this.userModel.create(createAuthDto);
+    // return await this.userModel.create(createAuthDto);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAll() {
+    return await this.userModel.find({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async findOne(id: number) {
+    return await this.userModel.findById(id);
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async update(id: number, updateAuthDto: UpdateUserDto) {
+    return await this.userModel.findByIdAndUpdate(id, updateAuthDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async remove(id: number) {
+    return await this.userModel.findByIdAndDelete(id);
   }
 }

@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from '../../../common/base/entities/base.entity';
 
+export type UserDocument = User & Document;
 @Schema({ timestamps: true })
 export class User extends BaseEntity {
 

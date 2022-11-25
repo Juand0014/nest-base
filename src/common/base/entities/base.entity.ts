@@ -1,33 +1,10 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Document, Schema as MSchema } from 'mongoose';
+import { Schema as MSchema } from 'mongoose';
 
-@Schema({ timestamps: true })
-export class BaseEntity extends Document {
+export class BaseEntity {
 	
   _id: MSchema.Types.ObjectId;
-
-  @ApiProperty({
-    description: 'The date of creation of the record',
-    example: '2021-05-01T00:00:00.000Z',
-    default: '2021-05-01T00:00:00.000Z',
-  })
-  @Prop({
-    type: Date,
-    default: Date.now,
-  })
-  created_on: Date;
-
-  @ApiProperty({
-    description: 'The date of the last update of the record',
-    example: '2021-05-01T00:00:00.000Z',
-    default: '2021-05-01T00:00:00.000Z',
-  })
-  @Prop({
-    type: Date,
-    default: Date.now,
-  })
-  updated_on: Date;
 
   @ApiProperty({
     description: 'The person who created the record',
