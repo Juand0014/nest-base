@@ -1,33 +1,93 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
 import { UserAuth } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import { JwtPayload } from './interface/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(UserAuth.name)
     private readonly userModel: Model<UserAuth>,
+    private readonly jwtService: JwtService,
   ) {}
   async create(createAuthDto: CreateUserDto) {
-    return await this.userModel.create(createAuthDto);
-    // return await this.userModel.create(createAuthDto);
+    try {
+      const { password, ...rest } = createAuthDto;
+
+      const user = new this.userModel({
+        ...rest,
+        password: bcrypt.hashSync(password, 10),
+      });
+
+      await user.save();
+      delete user.password;
+
+      return {
+        ...rest,
+        token: this.jwtService.sign({ _id: user._id }),
+      };
+    } catch (error) {
+      this.handlerDBErrors(error);
+    }
   }
 
-  async findAll() {
-    return await this.userModel.find({});
+  async login(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    const user = await this.userModel
+      .findOne(
+        { email: email },
+        {
+          password: true,
+          email: true,
+          id: true,
+        },
+      )
+      .select([
+        '-__v',
+        '-createdAt',
+        '-updatedAt',
+        '-isActive',
+        '-created_by',
+        '-updated_by',
+      ])
+      .exec();
+    if (!user) throw new BadRequestException('Invalid credentials');
+
+    const isMatch = await bcrypt.compareSync(password, user.password);
+    if (!isMatch) throw new BadRequestException('Invalid credentials');
+    delete user.password;
+
+    return {
+      ...user.toJSON(),
+      token: this.jwtService.sign({ _id: user._id }),
+    };
   }
 
-  async findOne(id: number) {
-    return await this.userModel.findById(id);
+  async refreshToken(user: UserAuth) {
+    return {
+      token: this.getJwtToken({ _id: user._id }),
+    };
   }
 
-  async update(id: number, updateAuthDto: UpdateUserDto) {
-    return await this.userModel.findByIdAndUpdate(id, updateAuthDto);
+  private getJwtToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token;
   }
 
-  async remove(id: number) {
-    return await this.userModel.findByIdAndDelete(id);
+  private handlerDBErrors(error: any): never {
+    if (error.code === '23505') throw new BadRequestException(error.detail);
+
+    Logger.error(error, `Table - (${error.table.toUpperCase()})`);
+
+    throw new InternalServerErrorException('Please check server logs');
   }
 }
