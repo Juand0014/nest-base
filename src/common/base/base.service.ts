@@ -20,14 +20,18 @@ export class BaseService<
 
   async findAll(): Promise<T[]> {
     try {
-      return this.basemodule.find().exec();
+      return this.basemodule.find()
+      .select(['-__v', '-createdAt', '-updatedAt', "-created_by", "-updated_by"])
+      .exec();
     } catch (error) {
       throw new BadGatewayException(error);
     }
   }
 
   async get(_id: Schema.Types.ObjectId): Promise<T> {
-    const customer = await this.basemodule.findById({ _id }).exec();
+    const customer = await this.basemodule.findById({ _id })
+    .select(['-__v', '-createdAt', '-updatedAt', "-created_by", "-updated_by"])
+    .exec();
     if (!customer)
       throw new NotFoundException(`Entity with id ${_id} not found`);
     return customer;
@@ -36,20 +40,18 @@ export class BaseService<
     _id: Schema.Types.ObjectId,
     updateEntityDto: TUpdateEntityDto,
   ): Promise<T> {
-    try {
       const updatedEntity = await this.basemodule
         .findByIdAndUpdate(_id, updateEntityDto, {
           new: true,
         })
+        .select(['-__v', '-createdAt', '-updatedAt', "-created_by"])
         .exec();
 
-      if (!Boolean(updatedEntity))
+      if (!Boolean(updatedEntity)){
         throw new NotFoundException(`Entity with id ${_id} not found`);
+      }
+
       return updatedEntity;
-      
-    } catch (err) {
-      this.handleExceptions(err);
-    }
   }
   async create(entity: TCreateEntityDto): Promise<T> {
     try {

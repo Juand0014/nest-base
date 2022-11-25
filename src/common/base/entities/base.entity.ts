@@ -28,5 +28,3 @@ export class BaseEntity {
   })
   update_by: String;
 }
-
-export const BaseEntitySchema = SchemaFactory.createForClass(BaseEntity);

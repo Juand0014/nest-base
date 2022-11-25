@@ -9,8 +9,8 @@ import {
   environment,
   JoiValidationSchema,
 } from './config';
-import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { CarModule } from './modules/car/car.module';
 
 @Module({
   imports: [
@@ -20,8 +20,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     MongooseModule.forRoot(database[environment]),
     CommonModule,
-    UserModule,
     AuthModule,
+    CarModule,
   ],
   controllers: [],
   providers: [],

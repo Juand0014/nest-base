@@ -70,7 +70,7 @@ export function BaseControllerFactory<
       type: String,
     })
     @ApiBody({ type: updateDto })
-    async update(
+    update(
       @Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId,
       @Body() updateEntityDto: TUpdateEntityDto,
     ): Promise<T> {

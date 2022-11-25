@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorator';
+import { Auth } from './decorator/auth.decorator';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { UserAuth } from './entities/user.entity';
+import { ValidRoles } from './interface';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +20,8 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
-  @UseGuards(AuthGuard())
+  
+  @Auth(ValidRoles.user)
   @Get('refreshToken')
   refreshToken(
     @GetUser() user: UserAuth
