@@ -22,7 +22,7 @@ This is a base NestJS project with some basic configurations.
 
 ## Endpoints for test
 
-| Endpoint | Method | Description |
+| Endpoint | Method | Description |  
 | --- | --- | --- |
 | /users | GET | Returns all users |
 | /users/:id | GET | Returns a user by id |

@@ -21,7 +21,7 @@ export class BaseService<
   async findAll(): Promise<T[]> {
     try {
       return this.basemodule.find()
-      .select(['-__v', '-createdAt', '-updatedAt', "-created_by", "-updated_by"])
+      .select(['-__v', '-createdAt', '-updatedAt', "-update_by"])
       .exec();
     } catch (error) {
       throw new BadGatewayException(error);
@@ -30,7 +30,7 @@ export class BaseService<
 
   async get(_id: Schema.Types.ObjectId): Promise<T> {
     const customer = await this.basemodule.findById({ _id })
-    .select(['-__v', '-createdAt', '-updatedAt', "-created_by", "-updated_by"])
+    .select(['-__v', '-createdAt', '-updatedAt', "-update_by"])
     .exec();
     if (!customer)
       throw new NotFoundException(`Entity with id ${_id} not found`);

@@ -2,6 +2,7 @@ import { applyDecorators } from "@nestjs/common";
 import { ApiResponse, DocumentBuilder } from "@nestjs/swagger";
 
 export const configSwagger = new DocumentBuilder()
+  .addBearerAuth()
   .setTitle('BaseNest')
   .setDescription('Base with the simple method')
   .setVersion('1.0')

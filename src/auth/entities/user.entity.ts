@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { ApiProperty } from "@nestjs/swagger"
 import { BaseEntity } from "src/common/base";
 import { Document } from "mongoose"
+import { ValidRoles } from "../interface";
 
 export type UserAuthDocument = UserAuth & Document
 
@@ -50,7 +51,7 @@ export class UserAuth extends BaseEntity {
   isActive: boolean;
 
   @ApiProperty({
-    enum: ['admin', 'user', 'super-user'],
+    enum: ValidRoles,
     isArray: true,
     default: ['user'],
   })
@@ -60,7 +61,6 @@ export class UserAuth extends BaseEntity {
 	})
   roles: string[];
 }
-
 
 
 export const UserAuthSchema = SchemaFactory.createForClass(UserAuth);

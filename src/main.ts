@@ -7,7 +7,7 @@ import { configSwagger, cors } from './config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);  
   const logger = new Logger('Bootstrap');
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001;
 
   app.setGlobalPrefix('/api')
   app.enableCors(cors);

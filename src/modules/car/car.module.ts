@@ -13,6 +13,9 @@ import { AuthModule } from 'src/auth/auth.module';
     MongooseModule.forFeature([{name: 'Car', schema: CarSchema}]), 
     CommonModule,
     AuthModule
+  ],
+  exports: [
+    MongooseModule
   ]
 })
 export class CarModule {}
