@@ -13,14 +13,18 @@ This is a base NestJS project with some basic configurations.
 
 1. Clone this repository
 2. Run `yarn install` to install all dependencies
-3. Upload database with docker-compose 
+3. change file name ```.env.example``` to ```.env``` and replace the variables for your variables
+4. Upload database with docker-compose 
   ```
     docker-compose up -d
   ```
-4. Run `yarn start:dev` to start the project in development mode
-5. Project will be running on `http://localhost:3000`
+1. Run `yarn start:dev` to start the project in development mode
+2. Project will be running on `http://localhost:3000`
+3. If you wanna see the documentation run ```yarn doc```
 
-## Auth Enpoints
+## EndPoints
+
+### Auth Enpoints
 
 | Endpoint | Method | Description |  
 | --- | --- | --- |
@@ -29,7 +33,7 @@ This is a base NestJS project with some basic configurations.
 | /api/auth/refreshToken | GET | Refresh Token |
 | /api/auth/logout | POST | Logout User
 
-## Cars Endpoint
+### Cars Endpoint
 
 | Endpoint | Method | Description |
 | --- | --- | --- |
