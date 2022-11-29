@@ -11,6 +11,8 @@ import {
 } from './config';
 import { AuthModule } from './auth/auth.module';
 import { CarModule } from './modules/car/car.module';
+import { BlacklistModule } from './modules/backlist/blacklist.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -19,9 +21,11 @@ import { CarModule } from './modules/car/car.module';
       validationSchema: JoiValidationSchema,
     }),
     MongooseModule.forRoot(database[environment]),
+    ScheduleModule.forRoot(),
     CommonModule,
     AuthModule,
     CarModule,
+    BlacklistModule,
   ],
   controllers: [],
   providers: [],

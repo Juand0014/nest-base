@@ -6,10 +6,12 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
+import { BlacklistService } from 'src/modules/backlist/blacklist.service';
+import { TokenType } from 'src/modules/backlist/interface/token.interface';
 import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
 import { UserAuth } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interface/jwt-payload.interface';
 
 @Injectable()
@@ -18,6 +20,7 @@ export class AuthService {
     @InjectModel(UserAuth.name)
     private readonly userModel: Model<UserAuth>,
     private readonly jwtService: JwtService,
+    private readonly blacklistService: BlacklistService,
   ) {}
   async create(createAuthDto: CreateUserDto) {
     try {
@@ -31,9 +34,10 @@ export class AuthService {
       await user.save();
       delete user.password;
 
+      const token = this.getJwtToken({ _id: user._id });
       return {
         ...rest,
-        token: this.jwtService.sign({ _id: user._id }),
+        token,
       };
     } catch (error) {
       this.handlerDBErrors(error);
@@ -72,9 +76,18 @@ export class AuthService {
     };
   }
 
-  async refreshToken(user: UserAuth) {
+  async refreshToken(user: UserAuth, passToken: TokenType) {
+    const token: string = this.getJwtToken({ _id: user._id });
+    this.blacklistService.logoutUser(passToken);
     return {
-      token: this.getJwtToken({ _id: user._id }),
+      token
+    };
+  }
+
+  async logout(passToken: TokenType) {
+    this.blacklistService.logoutUser(passToken);
+    return {
+      message: 'Logout successfully',
     };
   }
 
@@ -84,9 +97,12 @@ export class AuthService {
   }
 
   private handlerDBErrors(error: any): never {
+    if (error.code === 11000)
+      throw new BadRequestException(
+        `This property exist in database ${JSON.stringify(error.keyValue)}`,
+      );
     if (error.code === '23505') throw new BadRequestException(error.detail);
-
-    Logger.error(error, `Table - (${error.table.toUpperCase()})`);
+    Logger.error(error, `Table - (${error.table.toLowerCase()})`);
 
     throw new InternalServerErrorException('Please check server logs');
   }

@@ -15,6 +15,8 @@ export class CarController extends BaseControllerFactory<Car, CreateCarDto, Upda
     super(carService);
   }
 
+  @Auth(ValidRoles.user)
+  @ApiBearerAuth()
   @Get()
   override findAll(): Promise<Car[]> {
     return super.findAll();

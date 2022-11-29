@@ -12,6 +12,7 @@ export class UserAuth extends BaseEntity {
   @Prop({
 		type: String,
 		required: true,
+    unique: true,
 	})
   email: string;
 
