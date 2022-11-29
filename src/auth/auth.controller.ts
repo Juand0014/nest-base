@@ -23,6 +23,13 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @ApiBearerAuth()
+  @Auth()
+  @Post('logout')
+  logoout(@GetToken() token){
+    return this.authService.logout(token);
+  }
+
   @Auth(ValidRoles.user)
   @ApiBearerAuth()
   @Get('refreshToken')

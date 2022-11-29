@@ -20,12 +20,21 @@ This is a base NestJS project with some basic configurations.
 4. Run `yarn start:dev` to start the project in development mode
 5. Project will be running on `http://localhost:3000`
 
-## Endpoints for test
+## Auth Enpoints
 
 | Endpoint | Method | Description |  
 | --- | --- | --- |
-| /users | GET | Returns all users |
-| /users/:id | GET | Returns a user by id |
-| /users | POST | Creates a new user |
-| /users/:id | PUT | Updates a user by id |
-| /users/:id | DELETE | Deletes a user by id |
+| /api/auth/register | POST | Creates a new user |
+| /api/auth/login | POST | Login users |
+| /api/auth/refreshToken | GET | Refresh Token |
+| /api/auth/logout | POST | Logout User
+
+## Cars Endpoint
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| /api/car | GET | Get all cars |
+| /api/car/:id | GET | Get car by ID |
+| /api/car/:id | PATCH | Update cars by ID |
+| api/car | POST | add cars |
+| api/car/:id | DELETE |remove car by ID |

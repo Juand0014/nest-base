@@ -83,8 +83,8 @@ export class AuthService {
     };
   }
 
-  async logout(passToken: string) {
-    this.blacklistService.logoutUser(passToken);
+  async logout(token: string) {
+    this.blacklistService.logoutUser(token);
     return {
       message: 'Logout successfully',
     };
