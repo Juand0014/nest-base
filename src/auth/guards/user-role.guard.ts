@@ -23,9 +23,7 @@ export class UserRoleGuard implements CanActivate {
     const token: string = req.headers.authorization?.replace('Bearer ', '');
 		const user = req.user as UserAuth;
 
-    const isBlacklisted = await this.blacklistServices.isTokenBlacklisted({ token });
-    console.log(isBlacklisted);
-
+    const isBlacklisted = await this.blacklistServices.isTokenBlacklisted(token);
     
     if( !user )
     throw new BadRequestException('User not found');

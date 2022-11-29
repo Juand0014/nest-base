@@ -9,8 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { BlacklistService } from 'src/modules/backlist/blacklist.service';
-import { TokenType } from 'src/modules/backlist/interface/token.interface';
-import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, LoginUserDto } from './dto';
 import { UserAuth } from './entities/user.entity';
 import { JwtPayload } from './interface/jwt-payload.interface';
 
@@ -76,7 +75,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(user: UserAuth, passToken: TokenType) {
+  async refreshToken(user: UserAuth, passToken: string) {
     const token: string = this.getJwtToken({ _id: user._id });
     this.blacklistService.logoutUser(passToken);
     return {
@@ -84,7 +83,7 @@ export class AuthService {
     };
   }
 
-  async logout(passToken: TokenType) {
+  async logout(passToken: string) {
     this.blacklistService.logoutUser(passToken);
     return {
       message: 'Logout successfully',

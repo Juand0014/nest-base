@@ -3,7 +3,6 @@ import { Cron } from '@nestjs/schedule';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { BlacklistService } from './blacklist.service';
-import { TokenType } from './interface/token.interface';
 
 @Auth()
 @ApiBearerAuth()
@@ -13,12 +12,12 @@ export class blacklistController {
   constructor(private readonly blacklistService: BlacklistService) {}
   
   @Post()
-  logoutUser(@Body() token: TokenType) {
+  logoutUser(@Body() token: string) {
     return this.blacklistService.logoutUser(token);
   }
 
   @Get(':token')
-  isTokenBlacklisted(@Param('token') token: TokenType) {
+  isTokenBlacklisted(@Param('token') token: string) {
     return this.blacklistService.isTokenBlacklisted(token);
   }
 }

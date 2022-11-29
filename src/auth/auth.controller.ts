@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { TokenType } from 'src/modules/backlist/interface/token.interface';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorator';
 import { Auth } from './decorator/auth.decorator';
@@ -29,7 +28,7 @@ export class AuthController {
   @Get('refreshToken')
   refreshToken(
     @GetUser() user: UserAuth,
-    @GetToken() token: TokenType,
+    @GetToken() token: string,
   ) {
     return this.authService.refreshToken(user, token);
   }
