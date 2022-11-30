@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  basenestapp:
+    depends_on:
+      - db
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: nest-base
+    container_name: basenestapp
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      DB_URI_DEV: ${DB_URI_DEV}
+      CORS_ALLOWED_HOSTS: ${CORS_ALLOWED_HOSTS}
+      JWT_SECRET: ${JWT_SECRET}
+  db:
+    image: mongo:5
+    container_name: basenestapp-db
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_DATABASE: baseNest
+    volumes:
+      - ./mongo:/data/db
