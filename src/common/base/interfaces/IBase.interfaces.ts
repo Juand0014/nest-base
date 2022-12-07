@@ -1,12 +1,13 @@
 import { Schema as MSchema } from 'mongoose';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { BaseEntity } from '../entities/base.entity';
 
 export interface IBaseInterface<
   T extends BaseEntity,
   TCreateEntityDto,
-  TUpdateEntityDto,
+  TUpdateEntityDto
 > {
-  findAll(): Promise<T[]>;
+  findAll(paginationDto: PaginationDto): Promise<T[]>;
 
   get(_id: MSchema.Types.ObjectId): Promise<T>;
 

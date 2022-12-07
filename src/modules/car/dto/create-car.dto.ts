@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateCarDto {
 	@ApiProperty({
@@ -27,7 +27,6 @@ export class CreateCarDto {
 	})
 	@IsNumber()
 	@IsNotEmpty()
-	@MaxLength(4)
 	year: number;
 
 	@ApiProperty({

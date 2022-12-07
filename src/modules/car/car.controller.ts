@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { BaseControllerFactory } from 'src/common/base';
 import { CarService } from './car.service';
@@ -7,6 +7,7 @@ import { UpdateCarDto } from './dto/update-car.dto';
 import { Car } from './entities/car.entity';
 import { ValidRoles } from '../../auth/interface/valid-roles';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('Car')
 @Controller('car')
@@ -18,7 +19,7 @@ export class CarController extends BaseControllerFactory<Car, CreateCarDto, Upda
   @Auth(ValidRoles.user)
   @ApiBearerAuth()
   @Get()
-  override findAll(): Promise<Car[]> {
-    return super.findAll();
+  override findAll(paginationDto: PaginationDto): Promise<Car[]> {
+    return super.findAll(paginationDto);
   }
 }

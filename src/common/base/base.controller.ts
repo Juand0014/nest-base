@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Schema } from 'mongoose';
 import { ApiResponseStatus } from 'src/config';
-import { BaseEntity, IBaseController, IBaseService } from '.';
+import { BaseEntity, BaseService, IBaseController, IBaseService } from '.';
+import { PaginationDto } from '../dto/pagination.dto';
 import { ParseObjectIdPipe } from '../pipes';
 import { validationPipeCustom } from '../pipes/implementsValidationPipe';
 import { Constructor } from '../types/constructor.types';
@@ -29,7 +31,7 @@ export function BaseControllerFactory<
     implements IBaseController<T, TCreateEntityDto, TUpdateEntityDto>
   {
     constructor(
-      private readonly service: IBaseService<
+      private readonly service: BaseService<
         T,
         TCreateEntityDto,
         TUpdateEntityDto
@@ -38,9 +40,30 @@ export function BaseControllerFactory<
 
     @Get()
     @ApiResponseStatus()
+    @ApiQuery({
+      name: "offset",
+      required: false,
+      type: Number,
+      description: "Page number",
+      schema: {
+        default: 1,
+        minimum: 1,
+      },
+    })
+    @ApiQuery({
+      name: "limit",
+      required: false,
+      type: Number,
+      description: "Limit number of entities returned",
+      schema: {
+        default: 10,
+        minimum: 1,
+        maximum: 100,
+      },
+    })
     @ApiOperation({ description: 'Get all data', summary: 'Get all data' })
-    findAll(): Promise<T[]> {
-      const entities = this.service.findAll();
+    findAll(@Query() paginationDto: PaginationDto): Promise<T[]> {
+      const entities = this.service.findAll(paginationDto);
       return entities;
     }
 

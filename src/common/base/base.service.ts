@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Model, Schema } from 'mongoose';
 import { IBaseService } from '.';
+import { PaginationDto } from '../dto/pagination.dto';
 import { BaseEntity } from './entities/base.entity';
 
 @Injectable()
@@ -18,10 +19,16 @@ export class BaseService<
 {
   constructor(private readonly basemodule: Model<T>) {}
 
-  async findAll(): Promise<T[]> {
+  async findAll(paginationDto: PaginationDto): Promise<T[]> {
+    const { limit = 10, offset } = paginationDto;
     try {
       return this.basemodule.find()
+      .sort({
+        createdAt: 1
+      })
       .select(['-__v', '-createdAt', '-updatedAt', "-update_by"])
+      .limit(limit)
+      .skip(offset)
       .exec();
     } catch (error) {
       throw new BadGatewayException(error);

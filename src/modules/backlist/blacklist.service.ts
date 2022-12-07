@@ -12,14 +12,12 @@ export class BlacklistService {
 	){}
 
 	async logoutUser(token: string): Promise<BlackList> {
-		const blacklist = await this.blacklistModel.create({token});
+		const blacklist = await this.blacklistModel.create({ token });
 		return blacklist;
 	}
 
 	async isTokenBlacklisted(token: string): Promise<boolean> {
-		const blacklist = await this.blacklistModel.findOne({ token
-		}).exec();
-
+		const blacklist = await this.blacklistModel.findOne({ token }).exec();
 		return !!blacklist;
 	}
 

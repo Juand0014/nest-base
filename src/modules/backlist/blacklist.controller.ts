@@ -10,14 +10,4 @@ import { BlacklistService } from './blacklist.service';
 @Controller('blacklist')
 export class blacklistController {
   constructor(private readonly blacklistService: BlacklistService) {}
-  
-  @Post()
-  logoutUser(@Body() token: string) {
-    return this.blacklistService.logoutUser(token);
-  }
-
-  @Get(':token')
-  isTokenBlacklisted(@Param('token') token: string) {
-    return this.blacklistService.isTokenBlacklisted(token);
-  }
 }
