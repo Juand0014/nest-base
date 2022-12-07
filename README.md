@@ -23,22 +23,28 @@ This is a base NestJS project with some basic configurations.
     ```
     npm i -g @nestjs/cli
     ```
+    
+4. Crear la imagen de la db
 
-4. Levantar la base de datos
+    ```
+    docker-compose up --build
+    ```
+
+5. Levantar la base de datos
 
     ```
     docker-compose up -d
     ```
 
-5. Clonar el __.env.template__ y renombrarlo a __.env__
+6. Clonar el __.env.template__ y renombrarlo a __.env__
    
-6. Llenar las variables de entorno definidas en el archivo __.env__
+7. Llenar las variables de entorno definidas en el archivo __.env__
 
-7. Ejecutar la aplicacion en dev 
+8. Ejecutar la aplicacion en dev 
     ```
     yarn start:dev 
     ```
-8. If you wanna see the documentation run 
+9. If you wanna see the documentation run 
     ```
     yarn doc
     ```
