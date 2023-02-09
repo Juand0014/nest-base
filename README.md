@@ -11,36 +11,36 @@ This is a base NestJS project with some basic configurations.
 
 ## How to configure this project to your needs?
 
-1. Clonar el repositorio
-2. Ejecutar
+1. Clone this repo
+2. Install dependencies
 
     ```
     yarn install
     ```
 
-3. Tener nest CLI instalado
+3. Install NestJS CLI
 
     ```
     npm i -g @nestjs/cli
     ```
     
-4. Crear la imagen de la db
+4. Build the docker image
 
     ```
     docker-compose up --build
     ```
 
-5. Levantar la base de datos
+5. Run the docker container
 
     ```
     docker-compose up -d
     ```
 
-6. Clonar el __.env.template__ y renombrarlo a __.env__
+6. Create the __.env__ file
    
-7. Llenar las variables de entorno definidas en el archivo __.env__
+7. Fill the __.env__ file with the environment variables
 
-8. Ejecutar la aplicacion en dev 
+8. Run the project in dev mode
     ```
     yarn start:dev 
     ```

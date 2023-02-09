@@ -1,5 +1,5 @@
 import { Schema as MSchema } from 'mongoose';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from '../../dto';
 import { BaseEntity } from '../entities/base.entity';
 
 export interface IBaseInterface<

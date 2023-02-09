@@ -1,3 +1,3 @@
-export * from './customValidationPipe';
-export * from './parseObjectIdPipe';
-export * from './implementsValidationPipe';
+export * from './custom-validationpipe.pipe';
+export * from './parse-object-id.pipe';
+export * from './implemet-validationpipe.pipe';

@@ -7,7 +7,7 @@ import { UpdateCarDto } from './dto/update-car.dto';
 import { Car } from './entities/car.entity';
 import { ValidRoles } from '../../auth/interface/valid-roles';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginationDto } from '../../common/dto';
 
 @ApiTags('Car')
 @Controller('car')

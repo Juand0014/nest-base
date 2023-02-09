@@ -9,13 +9,13 @@ import {
   Query,
   UsePipes,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Schema } from 'mongoose';
 import { ApiResponseStatus } from 'src/config';
-import { BaseEntity, BaseService, IBaseController, IBaseService } from '.';
-import { PaginationDto } from '../dto/pagination.dto';
+import { BaseEntity, BaseService, IBaseController } from '.';
+import { PaginationDto } from '../dto';
 import { ParseObjectIdPipe } from '../pipes';
-import { validationPipeCustom } from '../pipes/implementsValidationPipe';
+import { validationPipeCustom } from '../pipes/implemet-validationpipe.pipe';
 import { Constructor } from '../types/constructor.types';
 
 export function BaseControllerFactory<

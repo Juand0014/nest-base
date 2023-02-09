@@ -14,7 +14,7 @@ import { BlacklistModule } from '../backlist/blacklist.module';
     MongooseModule.forFeature([{name: 'Car', schema: CarSchema}]), 
     forwardRef(() => BlacklistModule),
     forwardRef(() => AuthModule),
-    CommonModule
+    forwardRef(() => CommonModule)
   ],
   exports: [
     MongooseModule

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Model, Schema } from 'mongoose';
 import { IBaseService } from '.';
-import { PaginationDto } from '../dto/pagination.dto';
+import { PaginationDto } from '../dto';
 import { BaseEntity } from './entities/base.entity';
 
 @Injectable()
@@ -43,6 +43,7 @@ export class BaseService<
       throw new NotFoundException(`Entity with id ${_id} not found`);
     return customer;
   }
+  
   async update(
     _id: Schema.Types.ObjectId,
     updateEntityDto: TUpdateEntityDto,
