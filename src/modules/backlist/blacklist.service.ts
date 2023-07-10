@@ -1,14 +1,14 @@
-import { Injectable, Logger} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 import { BlackList } from './entities/blacklist.entity';
 import { Cron } from '@nestjs/schedule';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BlacklistService {
 	constructor(
-		@InjectModel(BlackList.name)
-		private readonly blacklistModel: Model<BlackList>,
+		@InjectRepository(BlackList)
+		private readonly blacklistModel: Repository<BlackList>,
 	){}
 
 	async logoutUser(token: string): Promise<BlackList> {
@@ -17,7 +17,9 @@ export class BlacklistService {
 	}
 
 	async isTokenBlacklisted(token: string): Promise<boolean> {
-		const blacklist = await this.blacklistModel.findOne({ token }).exec();
+		const blacklist = await this.blacklistModel.findOne({
+			where: { token }
+		});
 		return !!blacklist;
 	}
 
@@ -25,7 +27,12 @@ export class BlacklistService {
 	async deleteTokenBefore2Hours(): Promise<void> {
 		const date = new Date();
 		date.setHours(date.getHours() - 2);
-		const tokensDeleted = await this.blacklistModel.deleteMany({ createdAt: { $lt: date } }).exec();
-		if( tokensDeleted.deletedCount ) Logger.log(`Tokens deleted: ${ tokensDeleted.deletedCount }`);
+
+		const tokensDeleted = await this.blacklistModel
+		.createQueryBuilder('blacklist')
+		.where('blacklist.created_at <= :date', { date })
+		.getMany();
+
+		await this.blacklistModel.remove(tokensDeleted);
 	}
 }

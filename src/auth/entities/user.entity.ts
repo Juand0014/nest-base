@@ -1,19 +1,17 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose"
 import { ApiProperty } from "@nestjs/swagger"
 import { BaseEntity } from "src/common/base";
-import { Document } from "mongoose"
 import { ValidRoles } from "../interface";
+import { Column, Entity } from "typeorm";
 
 export type UserAuthDocument = UserAuth & Document
 
-@Schema({ timestamps: true })
+@Entity('users')
 export class UserAuth extends BaseEntity {
   @ApiProperty({ type: String, description: 'User email', uniqueItems: true })
-  @Prop({
-		type: String,
-		required: true,
-    unique: true,
-	})
+  @Column({
+    nullable: false,
+    unique: true
+  })
   email: string;
 
   @ApiProperty({
@@ -23,11 +21,7 @@ export class UserAuth extends BaseEntity {
     maxLength: 50,
     pattern: '/(?:(?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$/',
   })
-  @Prop({
-		type: String,
-		required: true,
-		select: false,
-	})
+  @Column()
   password: string;
 
   @ApiProperty({
@@ -35,20 +29,14 @@ export class UserAuth extends BaseEntity {
     description: 'User full name',
     minLength: 1,
   })
-  @Prop({
-		type: String,
-		required: true,
-	})
+  @Column()
   fullName: string;
 
   @ApiProperty({
     type: Boolean,
     default: true
   })
-  @Prop({
-		type: Boolean,
-		default: true,
-	})
+  @Column()
   isActive: boolean;
 
   @ApiProperty({
@@ -56,10 +44,7 @@ export class UserAuth extends BaseEntity {
     isArray: true,
     default: ['user'],
   })
-  @Prop({
-		type: [String],
-		default: ['user'],
-	})
+  @Column()
   roles: string[];
 }
 

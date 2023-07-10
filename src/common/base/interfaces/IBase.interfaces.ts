@@ -1,22 +1,21 @@
-import { Schema as MSchema } from 'mongoose';
 import { PaginationDto } from '../../dto';
 import { BaseEntity } from '../entities/base.entity';
 
 export interface IBaseInterface<
   T extends BaseEntity,
   TCreateEntityDto,
-  TUpdateEntityDto
+  TUpdateEntityDto,
 > {
   findAll(paginationDto: PaginationDto): Promise<T[]>;
 
-  get(_id: MSchema.Types.ObjectId): Promise<T>;
+  get(id: string): Promise<T>;
 
   update(
-    _id: MSchema.Types.ObjectId,
+    id: string,
     updateEntityDto: TUpdateEntityDto,
   ): Promise<T>;
 
   create(entity: TCreateEntityDto): Promise<T>;
 
-  delete(_id: MSchema.Types.ObjectId): Promise<void>;
+  delete(id: string): Promise<void>;
 }

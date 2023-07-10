@@ -1,7 +1,7 @@
 require('dotenv').config();
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
 import {
   database,
@@ -20,14 +20,39 @@ import { ScheduleModule } from '@nestjs/schedule';
       load: [envConfig],
       validationSchema: JoiValidationSchema,
     }),
-    MongooseModule.forRoot(database[environment]),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: database.host,
+      port: database.port,
+      username: database.username,
+      password: database.password,
+      database: database.name,
+      ssl: environment === 'production',
+      extra: {
+        ssl: environment === 'production'
+          ? { rejectUnauthorized: false }
+          : null,
+      }
+    }),
     ScheduleModule.forRoot(),
     CommonModule,
     AuthModule,
     CarModule,
     BlacklistModule,
-  ],
-  controllers: [],
-  providers: [],
+  ]
+  // imports: [
+  //   ConfigModule.forRoot({
+  //     load: [envConfig],
+  //     validationSchema: JoiValidationSchema,
+  //   }),
+  //   MongooseModule.forRoot(database[environment]),
+  //   ScheduleModule.forRoot(),
+  //   CommonModule,
+  //   AuthModule,
+  //   CarModule,
+  //   BlacklistModule,
+  // ],
+  // controllers: [],
+  // providers: [],
 })
 export class AppModule {}

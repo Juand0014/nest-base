@@ -5,19 +5,19 @@ import {
   Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model } from 'mongoose';
 import { BlacklistService } from 'src/modules/backlist/blacklist.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { UserAuth } from './entities/user.entity';
 import { JwtPayload } from './interface/jwt-payload.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserAuth.name)
-    private readonly userModel: Model<UserAuth>,
+    @InjectRepository(UserAuth)
+    private readonly userModel: Repository<UserAuth>,
     private readonly jwtService: JwtService,
     private readonly blacklistService: BlacklistService,
   ) {}
@@ -25,15 +25,15 @@ export class AuthService {
     try {
       const { password, ...rest } = createAuthDto;
 
-      const user = new this.userModel({
+      const user = this.userModel.create({
         ...rest,
         password: bcrypt.hashSync(password, 10),
       });
 
-      await user.save();
+      await this.userModel.save(user);
       delete user.password;
 
-      const token = this.getJwtToken({ _id: user._id });
+      const token = this.getJwtToken({ id: user.id });
       return {
         ...rest,
         token,
@@ -76,7 +76,7 @@ export class AuthService {
   }
 
   async refreshToken(user: UserAuth, passToken: string) {
-    const token: string = this.getJwtToken({ _id: user._id });
+    const token: string = this.getJwtToken({ id: user.id });
     this.blacklistService.logoutUser(passToken);
     return {
       token

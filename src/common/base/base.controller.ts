@@ -4,13 +4,13 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
   UsePipes,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { Schema } from 'mongoose';
 import { ApiResponseStatus } from 'src/config';
 import { BaseEntity, BaseService, IBaseController } from '.';
 import { PaginationDto } from '../dto';
@@ -75,7 +75,7 @@ export function BaseControllerFactory<
       description: 'The id of the entity to find',
       type: String,
     })
-    get(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId): Promise<T> {
+    get(@Param('id', ParseUUIDPipe) id: string): Promise<T> {
       const entity = this.service.get(id);
       return entity;
     }
@@ -94,7 +94,7 @@ export function BaseControllerFactory<
     })
     @ApiBody({ type: updateDto })
     update(
-      @Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId,
+      @Param('id', ParseUUIDPipe) id: string,
       @Body() updateEntityDto: TUpdateEntityDto,
     ): Promise<T> {
       const updatedEntity = this.service.update(id, updateEntityDto);
@@ -125,7 +125,7 @@ export function BaseControllerFactory<
       description: 'Create data by Id',
       summary: 'Create data by Id',
     })
-    async delete(@Param('id', ParseObjectIdPipe) id: Schema.Types.ObjectId) {
+    async delete(@Param('id', ParseUUIDPipe) id: string) {
       await this.service.delete(id);
       return;
     }

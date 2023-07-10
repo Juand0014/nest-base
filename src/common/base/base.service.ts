@@ -1,79 +1,77 @@
 import {
-  BadGatewayException,
   BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Model, Schema } from 'mongoose';
 import { IBaseService } from '.';
 import { PaginationDto } from '../dto';
 import { BaseEntity } from './entities/base.entity';
+import { DeepPartial, Repository } from 'typeorm';
+import { isUUID } from 'class-validator';
 
 @Injectable()
-export class BaseService<
+export abstract class BaseService<
   T extends BaseEntity,
   TCreateEntityDto,
   TUpdateEntityDto,
 > implements IBaseService<T, TCreateEntityDto, TUpdateEntityDto>
 {
-  constructor(private readonly basemodule: Model<T>) {}
+  constructor(private repository: Repository<T>) {}
 
-  async findAll(paginationDto: PaginationDto): Promise<T[]> {
-    const { limit = 10, offset } = paginationDto;
+  findAll(paginationDto: PaginationDto): Promise<T[]> {
+    const { limit = 10, offset = 0 } = paginationDto;
+    return this.repository.find({
+      skip: offset,
+      take: limit,
+    });
+  }
+
+  async get(id: string): Promise<T> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    const entity = await this.repository.findOne({
+      where: { id } as any
+    });
+    if (!entity) {
+      throw new NotFoundException(`Entity with ID '${id}' not found`);
+    }
+    return entity;
+  }
+
+  async update(id: string, updateEntityDto: TUpdateEntityDto): Promise<T> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    let entity = await this.get(id);
+    entity = Object.assign({ id: entity.id, ...updateEntityDto });
     try {
-      return this.basemodule.find()
-      .sort({
-        createdAt: 1
-      })
-      .select(['-__v', '-createdAt', '-updatedAt', "-update_by"])
-      .limit(limit)
-      .skip(offset)
-      .exec();
+      return await this.repository.save(entity);
     } catch (error) {
-      throw new BadGatewayException(error);
+      this.handleExceptions(error);
     }
   }
 
-  async get(_id: Schema.Types.ObjectId): Promise<T> {
-    const customer = await this.basemodule.findById({ _id })
-    .select(['-__v', '-createdAt', '-updatedAt', "-update_by"])
-    .exec();
-    if (!customer)
-      throw new NotFoundException(`Entity with id ${_id} not found`);
-    return customer;
-  }
-  
-  async update(
-    _id: Schema.Types.ObjectId,
-    updateEntityDto: TUpdateEntityDto,
-  ): Promise<T> {
-      const updatedEntity = await this.basemodule
-        .findByIdAndUpdate(_id, updateEntityDto, {
-          new: true,
-        })
-        .select(['-__v', '-createdAt', '-updatedAt', "-created_by"])
-        .exec();
-
-      if (!Boolean(updatedEntity)){
-        throw new NotFoundException(`Entity with id ${_id} not found`);
-      }
-
-      return updatedEntity;
-  }
-  async create(entity: TCreateEntityDto): Promise<T> {
+  async create(entityDto: TCreateEntityDto): Promise<T> {
     try {
-      const createdEntity = await this.basemodule.create(entity);
-      return createdEntity;
-    } catch (err) {
-      this.handleExceptions(err);
+      let entityParse = Object(entityDto)
+      let entity = this.repository.create(entityParse);
+      await this.repository.save(entity);
+      return entityParse;
+    } catch (error) {
+      this.handleExceptions(error);
     }
   }
-  async delete(_id: Schema.Types.ObjectId) {
-    const { deletedCount } = await this.basemodule.deleteOne({ _id });
-    if (!deletedCount)
-      throw new NotFoundException(`Entity with id ${_id} not found`);
-    return;
+
+  async delete(id: string): Promise<void> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    const result = await this.repository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Entity with ID '${id}' not found`);
+    }
   }
 
   private handleExceptions(error: any) {

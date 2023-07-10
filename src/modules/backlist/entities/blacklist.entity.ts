@@ -1,21 +1,12 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MSchema } from 'mongoose';
+import { ApiProperty } from "@nestjs/swagger";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export type BlackListDocument = BlackList & Document;
-
-@Schema({
-  timestamps: {
-    createdAt: true,
-  },
-})
+@Entity("blacklist")
 export class BlackList {
-  _id: MSchema.Types.ObjectId;
+  @ApiProperty({ type: String, format: 'uuid' , description: 'id' })
+  @PrimaryGeneratedColumn()
+  id: string;
 
-  @Prop({
-    type: String,
-    required: true,
-  })
+  @Column('text')
   token: string;
 }
-
-export const BlackListSchema = SchemaFactory.createForClass(BlackList);
